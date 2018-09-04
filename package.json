@@ -1,0 +1,13 @@
+{
+  "name": "OusamaBot",
+  "description": "",
+  "version": "0.0.0",
+  "main": "ousama.js",
+  "scripts": {
+    "start": "node ousama.js"
+  },
+  "dependencies": {
+    "discord.js": "11.4.2",
+    "request": "2.81.0"
+  }
+}
