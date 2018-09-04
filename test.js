@@ -3,7 +3,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
-const userID = process.env.userID;
 // var config = JSON.parse(fs.readFileSync('config.json','utf8'));
 var config = {
 	status: 'off',
@@ -28,7 +27,7 @@ client.on('message', message => {
 	}
 	switch(path[1]){
 		case 'start':
-			if(auth.id!==userID){
+			if(auth.id!=='201912139240308736'){
 				console.log('Không đủ quyền')
 				return
 			}
@@ -76,7 +75,7 @@ client.on('message', message => {
 			break
 		case 'King':
 			if(auth.bot) return
-			if(auth.id!==userID){
+			if(auth.id!=='201912139240308736'){
 				channel.send('Không đủ quyền')
 				return
 			}
@@ -105,7 +104,7 @@ client.on('message', message => {
 			channel.send(`Số ${x} là <@${config.player[x].id}>`)
 			break
 		case 'end':
-			if(auth.id!==userID){
+			if(auth.id!=='201912139240308736'){
 				console.log('Không đủ quyền')
 				return
 			}
@@ -114,7 +113,7 @@ client.on('message', message => {
 			channel.send('Ousama Game End!')
 			break
 		case 'restart':
-			if(auth.id!==userID){
+			if(auth.id!=='201912139240308736'){
 				console.log('Không đủ quyền')
 				return
 			}
@@ -128,15 +127,15 @@ client.on('message', message => {
 			break
 	}
 
-	// client.on('message',message=>{
-	// 	if(message.content==='$clearchat'){
-	// 		try {
-	// 			message.channel.messages.deleteAll()
-	// 		} catch (error) {
-	// 			message.channel.send('I dont have enough permission')
-	// 		}
-	// 	}
-	// })
+	client.on('message',message=>{
+		if(message.content==='$clearchat'){
+			try {
+				message.channel.messages.deleteAll()
+			} catch (error) {
+				message.channel.send('I dont have enough permission')
+			}
+		}
+	})
 
 	function gameOn(){
 		if(config.status==='on') return true
@@ -177,4 +176,4 @@ client.on('message', message => {
 });
 
 
-client.login(process.env.clientid);
+client.login('NDg2MTQ0ODk5NjQ1ODMzMjI2.Dm66Zw.9zw7bWzGdG0SDnRYnixfuoDANNA');
