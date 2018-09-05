@@ -98,7 +98,7 @@ client.on('message', message => {
 					second--
 					if(second===-1){
 						kingNum = Math.floor(Math.random()*config.joined+1)
-						message.edit(`Congratulation! <@${config.player[kingNum].id}> is The King. Let's do your job <@${config.player[kingNum].id}>`)
+						message.edit(`Congratulation! <@${config.player[kingNum-1].id}> is The King. Let's do your job <@${config.player[kingNum-1].id}>`)
 						clearInterval(counting)
 					}else{
 						message.edit(message.content+='.')
@@ -130,7 +130,7 @@ client.on('message', message => {
 				channel.send('```Game is not started yet```')
 				return
 			}
-			channel.send('Restarting Ousama Game....').then(message=>{
+			channel.send('Restarting Ousama Game.').then(message=>{
 				let second = 3
 				let counting = setInterval(()=>{
 					second--
