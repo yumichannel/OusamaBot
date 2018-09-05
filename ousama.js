@@ -1,20 +1,19 @@
 /* global process */
 
-const Discord = require('discord.js');
-const client = new Discord.Client();
-const fs = require('fs');
-const userID = process.env.userID;
-const http = require('http')
-// var config = JSON.parse(fs.readFileSync('config.json','utf8'));
+const Discord = require('discord.js')
+const client = new Discord.Client()
+const userID = process.env.userID
+const authorGID = process.env.authorGID
+const authorCID = process.env.authorCID
+const pre = 'ousama';
 var config = {
 	status: 'off',
 	joined: 0,
 	player:[]
 }
-const pre = 'ousama';
 
 client.on('ready', () => {
-	console.log('bot is ready');
+	client.guilds.get(authorGID).channels.get(authorCID).send('Ousama Bot is online!')
 });
 
 client.on('message', message => {
@@ -28,33 +27,34 @@ client.on('message', message => {
 		return
 	}
 	switch(path[1]){
-		case 'start':
+		case 'on':
 			if(auth.id!==userID){
-				console.log('Không đủ quyền')
 				return
 			}
 			config.status='on'
 			// fs.writeFileSync('config.json',JSON.stringify(config),'utf8')
-			channel.send('Ousama Game Start! chat `ousama join` để tham gia')
+			channel.send('```Ousama Game Start! chat `ousama join` to join```')
 			break
 		case 'join':
 			if(auth.bot) return
 			if(!gameOn()){
-				channel.send('Game chưa bắt đầu')
+				channel.send('```Game is not started yet!```')
 				return
 			}
 			if(config.player.find(m=>m.id===auth.id)!==undefined){
-				channel.send('ban da join')
+				// channel.send('```'++'```')
 				return
 			}
 			config.player.push({
 				id: auth.id,
-				num: -1,
+				num: 0,
 				isKing: false
 			})
 			config.joined++;
-			channel.send(auth.nickname+' joined')
+			channel.send(auth.displayName+' joined')
 			break
+			
+		// A player out
 		case 'out':
 			if(auth.bot) return
 			if(config.joined===0) return
@@ -62,87 +62,95 @@ client.on('message', message => {
 			if(found>-1){
 				config.player.splice(found,1)
 				config.joined--
-				channel.send(auth.nickname+' out')
+				channel.send(auth.displayName+' out')
 			}
 			break
+
+		// Show list of player
 		case 'list':
 			let plist = ''
 			config.player.forEach(m => {
-				plist+=message.guild.member(m.id).nickname+'\n'
+				plist+=message.guild.member(m.id).displayName+'\n'
 			});
 			channel.send('```'+'List of player\n--------------\n'+plist+'```')
 			break
-		case 'begin':
+
+		//start the game and give numbers
+		case 'start':
 			gameStart()
 			break
+
+		//find The King
 		case 'King':
 			if(auth.bot) return
 			if(auth.id!==userID){
-				channel.send('Không đủ quyền')
 				return
 			}
 			if(!gameOn()){
-				channel.send('Game chưa bắt đầu')
+				channel.send('```Game is not started yet!```')
 				return
 			}
-			let kingNum = Math.floor(Math.random()*config.joined)
-			config.player[kingNum].isKing=true
-			let second = 3;
-			let counting = setInterval(()=>{
-				channel.send(second)
-				second--
-				if(second===-1){
-					channel.send(`Chúc mừng <@${config.player[kingNum].id}> đã trở thành vua, hãy thực hiện sứ mệnh của mình, <@${config.player[kingNum].id}>`)
-					clearInterval(counting)
-				}
-			},1000)
+			let kingNum = 0
+			// config.player[kingNum].isKing=true
+			channel.send('Finding The King.').then(message=>{
+				let second = 5
+				let counting = setInterval(()=>{
+					second--
+					if(second===-1){
+						kingNum = Math.floor(Math.random()*config.joined+1)
+						message.edit(`Congratulation! <@${config.player[kingNum].id}> is The King. Let's do your job <@${config.player[kingNum].id}>`)
+						clearInterval(counting)
+					}else{
+						message.edit(message.content+='.')
+					}
+				},1000)
+			})
 			break
 		case 'whois':
-			let x = parseInt(path[2],10)
-			if(path[2]<0 || path[2]>=config.joined){
-				channel.send('Không tìm thấy số '+x)
+			let x = parseInt(path[2],10)-1
+			if(path[2]<1 || path[2]>config.joined){
+				channel.send('Cannot find '+x)
 				return
 			}
-			channel.send(`Số ${x} là <@${config.player[x].id}>`)
+			channel.send(`Number ${x} is <@${config.player[x-1].id}>`)
 			break
 		case 'end':
 			if(auth.id!==userID){
-				console.log('Không đủ quyền')
 				return
 			}
 			reConfig('off',0,[])
 			// fs.writeFileSync('config.json',JSON.stringify(config),'utf8')
-			channel.send('Ousama Game End!')
+			channel.send('```Ousama Game End!```')
 			break
 		case 'restart':
 			if(auth.id!==userID){
-				console.log('Không đủ quyền')
 				return
 			}
 			if(!gameOn()){
-				channel.send('Game chưa bắt đầu')
+				channel.send('```Game is not started yet```')
 				return
 			}
-			reConfig('on',0,[])
-			// fs.writeFileSync('config.json',JSON.stringify(config),'utf8')
-			channel.send('Restart Ousama Game')
+			channel.send('Restarting Ousama Game....').then(message=>{
+				let second = 3
+				let counting = setInterval(()=>{
+					second--
+					if(second===-1){
+						reConfig('on',0,[])
+						message.edit('Ousama Game restarted!')
+						clearInterval(counting)
+					}else{
+						message.edit(message.content+='.')
+					}
+				},1000)
+			})
 			break
 	}
-
-	// client.on('message',message=>{
-	// 	if(message.content==='$clearchat'){
-	// 		try {
-	// 			message.channel.messages.deleteAll()
-	// 		} catch (error) {
-	// 			message.channel.send('I dont have enough permission')
-	// 		}
-	// 	}
-	// })
 
 	function gameOn(){
 		if(config.status==='on') return true
 		return false
 	}
+
 	function reConfig(a,b,c){
 		config = {
 			status: a,
@@ -151,12 +159,12 @@ client.on('message', message => {
 		}
 	}
 	function gameStart(){
-		if(config.status==='off'){
-			channel.send('Game chưa bắt đầu, chat `ousama begin` để bắt đầu game')
+		if(!gameOn()){
+			channel.send('```chat "ousama on" to active Ousama Game```')
 			return
 		}
 		if(config.joined===0){
-			channel.send('Chưa có ai tham gia game. chat `ousama join` để join game')
+			channel.send('```No player!```')
 			return
 		}
 		let check = []
@@ -165,10 +173,10 @@ client.on('message', message => {
 		}
 		config.player.forEach(m=>{
 			do{
-				m.num = Math.floor(Math.random()*config.joined)
-			}while(m.num===-1 || isUse(m.num,check))
-			check[m.num]=0
-			message.guild.member(m.id).send(`Số của bạn là ${m.num}`)
+				m.num = Math.floor(Math.random()*config.joined+1)
+			}while(m.num===0 || isUse(m.num-1,check))
+			check[m.num-1]=0
+			message.guild.member(m.id).send(`Your number is ${m.num}. Keep it safe! ^^`)
 		})
 	}
 	function isUse(x,a){
@@ -177,5 +185,17 @@ client.on('message', message => {
 	}
 });
 
+// client.on('message',message=>{
+// 	if(message.author.id!==process.env.authorId) return
+// 	if(message.content.startsWith('osm changeuser')){
+// 		let pathh = message.content.split(' ')
+// 		try {
+// 			config.userID = pathh[2]
+// 			message.channel.send(`<@${pathh[2]}> is the leader now.`)
+// 		} catch (error) {
+// 			message.channel.send('Syntax error')
+// 		}
+// 	}
+// })
 
 client.login(process.env.clientid);
