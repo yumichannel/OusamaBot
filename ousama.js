@@ -107,8 +107,8 @@ client.on('message', message => {
 			})
 			break
 		case 'whois':
-			let x = parseInt(path[2],10)-1
-			if(path[2]<1 || path[2]>config.joined){
+			let x = parseInt(path[2],10)
+			if(x<1 || x>config.joined){
 				channel.send('Cannot find '+x)
 				return
 			}
