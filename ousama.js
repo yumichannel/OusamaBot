@@ -11,6 +11,7 @@ var config = {
 	joined: 0,
 	player:[]
 }
+var check = []
 
 client.on('ready', () => {
 	client.guilds.get(authorGID).channels.get(authorCID).send('Ousama Bot is online!')
@@ -51,7 +52,7 @@ client.on('message', message => {
 				isKing: false
 			})
 			config.joined++;
-			channel.send(auth.displayName+' joined')
+			channel.send("```"+auth.displayName+' joined```')
 			break
 			
 		// A player out
@@ -62,7 +63,7 @@ client.on('message', message => {
 			if(found>-1){
 				config.player.splice(found,1)
 				config.joined--
-				channel.send(auth.displayName+' out')
+				channel.send('```'+auth.displayName+' out```')
 			}
 			break
 
@@ -72,7 +73,7 @@ client.on('message', message => {
 			config.player.forEach(m => {
 				plist+=message.guild.member(m.id).displayName+'\n'
 			});
-			channel.send('```'+'List of player\n--------------\n'+plist+'```')
+			channel.send('```'+`Number of player: ${config.joined}\n--------------\n`+plist+'```')
 			break
 
 		//start the game and give numbers
@@ -81,7 +82,7 @@ client.on('message', message => {
 			break
 
 		//find The King
-		case 'King':
+		case 'king':
 			if(auth.bot) return
 			if(auth.id!==userID){
 				return
@@ -92,7 +93,7 @@ client.on('message', message => {
 			}
 			let kingNum = 0
 			// config.player[kingNum].isKing=true
-			channel.send('Finding The King.').then(message=>{
+			channel.send('Finding The King').then(message=>{
 				let second = 5
 				let counting = setInterval(()=>{
 					second--
@@ -106,13 +107,13 @@ client.on('message', message => {
 				},1000)
 			})
 			break
-		case 'whois':
+		case 'reveal':
 			let x = parseInt(path[2],10)
 			if(x<1 || x>config.joined){
 				channel.send('Cannot find '+x)
 				return
 			}
-			channel.send(`Number ${x} is <@${config.player[x-1].id}>`)
+			channel.send(`Number ${x} is <@${chek[x-1].id}>`)
 			break
 		case 'end':
 			if(auth.id!==userID){
@@ -130,13 +131,13 @@ client.on('message', message => {
 				channel.send('```Game is not started yet```')
 				return
 			}
-			channel.send('Restarting Ousama Game.').then(message=>{
+			channel.send('Restarting Ousama Game').then(message=>{
 				let second = 3
 				let counting = setInterval(()=>{
 					second--
 					if(second===-1){
 						reConfig('on',0,[])
-						message.edit('Ousama Game restarted!')
+						message.edit('Ousama Game restarted!\n--------------------------------------------------------------------------')
 						clearInterval(counting)
 					}else{
 						message.edit(message.content+='.')
@@ -157,6 +158,7 @@ client.on('message', message => {
 			joined: b,
 			player: c
 		}
+		check = []
 	}
 	function gameStart(){
 		if(!gameOn()){
@@ -167,7 +169,6 @@ client.on('message', message => {
 			channel.send('```No player!```')
 			return
 		}
-		let check = []
 		for(let i = 0;i<config.joined;i++){
 			check.push(1)
 		}
@@ -175,7 +176,7 @@ client.on('message', message => {
 			do{
 				m.num = Math.floor(Math.random()*config.joined+1)
 			}while(m.num===0 || isUse(m.num-1,check))
-			check[m.num-1]=0
+			check[m.num-1]=m.id
 			message.guild.member(m.id).send(`Your number is ${m.num}. Keep it safe! ^^`)
 		})
 	}
