@@ -200,4 +200,8 @@ client.on('message', message => {
 // 	}
 // })
 
+client.on('error',error => {
+	client.guilds.get(authorGID).channels.get(authorCID).send("```"+error.message+"```")
+})
+
 client.login(process.env.clientid);
