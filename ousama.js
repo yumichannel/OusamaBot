@@ -108,12 +108,13 @@ client.on('message', message => {
 			})
 			break
 		case 'reveal':
+			if(auth.id!=='201912139240308736') return
 			let x = parseInt(path[2],10)
 			if(x<1 || x>config.joined){
 				channel.send('Cannot find '+x)
 				return
 			}
-			channel.send(`Number ${x} is <@${chek[x-1].id}>`)
+			channel.send(`Number ${x} is <@${check[x-1].id}>`)
 			break
 		case 'end':
 			if(auth.id!==userID){
