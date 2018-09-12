@@ -26,6 +26,7 @@ client.on('message', message => {
 		let cmdFile = require("./command/"+cmd+".js");
 		cmdFile.run(client,message,args,config);
 	}catch(err){
+		console.log("```"+err+"```")
 	}	
 });
 

@@ -15,13 +15,13 @@ exports.run = (client,message,args,config)=>{
         return
     }
     for(let i = 0;i<config.joined;i++){
-        check.push(1)
+        config.check.push(1)
     }
     config.player.forEach(m=>{
         do{
             m.num = Math.floor(Math.random()*config.joined+1)
-        }while(m.num==0 || check[m.num]==0)
-        check[m.num-1]=m.id
+        }while(m.num==0 || config.check[m.num]==0)
+        config.check[m.num-1]=m.id
         message.guild.member(m.id).send(`Your number is ${m.num}. Keep it safe! ^^`)
     })
 }
