@@ -8,7 +8,7 @@ const authorCID = process.env.authorCID
 exports.run = (client,message,args,config)=>{
     if(message.author.bot) return
     if(message.author.id!=userID) return
-    if(config.status=='on'){
+    if(config.status=='off'){
         message.channel.send('```Game is not started yet!```')
         return
     }
