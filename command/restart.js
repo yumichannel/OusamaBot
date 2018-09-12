@@ -19,13 +19,7 @@ exports.run = (client,message,args,config)=>{
         let counting = setInterval(()=>{
             second--
             if(second===-1){
-                let x = config.joined
-                config = {
-                    status: 'off',
-                    joined: x,
-                    player:[],
-                    check:[]
-                }
+                config.check=[]
                 m.edit('Ousama Game restarted! You can chose staying or leaving ^^\n--------------------------------------------------------------------------\n')
                 clearInterval(counting)
             }else{
