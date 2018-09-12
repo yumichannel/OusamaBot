@@ -21,5 +21,4 @@ exports.run = (client,message,args,config)=>{
     })
     config.joined++;
     message.channel.send("```"+message.member.displayName+' joined```')
-    break
 }
