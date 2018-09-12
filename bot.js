@@ -35,3 +35,5 @@ client.on('error',error => {
 })
 
 client.login(process.env.clientid);
+
+process.on('unhandledRejection',console.error)
