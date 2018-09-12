@@ -1,1 +1,1 @@
-worker: node ousama.js
+worker: node bot.js
