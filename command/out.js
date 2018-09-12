@@ -12,6 +12,6 @@ exports.run = (client,message,args,config)=>{
     if(found>-1){
         config.player.splice(found,1)
         config.joined--
-        channel.send('```'+message.member.displayName+' out```')
+        message.channel.send('```'+message.member.displayName+' out```')
     }
 }

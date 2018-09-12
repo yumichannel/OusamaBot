@@ -10,5 +10,5 @@ exports.run = (client,message,args,config)=>{
     config.player.forEach(m => {
         plist+=message.guild.member(m.id).displayName+'\n'
     });
-    channel.send('```'+`Number of player: ${config.joined}\n--------------\n`+plist+'```')
+    message.channel.send('```'+`Number of player: ${config.joined}\n--------------\n`+plist+'```')
 }
