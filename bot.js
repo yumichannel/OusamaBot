@@ -3,7 +3,7 @@ const client = new Discord.Client()
 const userID = process.env.userID
 const authorGID = process.env.authorGID
 const authorCID = process.env.authorCID
-const pre = 'ousama';
+const pre = 'mitsu';
 var config = {
 	status: 'off',
 	joined: 0,
@@ -20,13 +20,13 @@ client.on('message', message => {
 	if(message.author.bot) return;
 	if(message.channel.name!='ousama') return
 	if(!message.content.startsWith(pre) || message.channel.type=='dm') return;
-	const cmd = message.content.substring(7).split(' ')[0];
+	const cmd = message.content.substring(6).split(' ')[0];
 	const args = message.content.substring(cmd.length+2).split(' ');
 	try{
 		let cmdFile = require("./command/"+cmd+".js");
 		cmdFile.run(client,message,args,config);
 	}catch(err){
-		console.log("```"+err+"```")
+		console.log(err)
 	}	
 });
 
